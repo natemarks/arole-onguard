@@ -1,7 +1,7 @@
 galaxy_info:
   role_name: onguard
   author: natemarks
-  description: Install and configure onguard
+  description: Install onguard from a private S3 bucket
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
@@ -31,15 +31,17 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - 20.04
-  # - name: SomePlatform
-  #   versions:
-  #   - all
-  #   - 1.0
-  #   - 7
-  #   - 99.99
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Debian
+      versions:
+        - buster
+        - stretch
 
   galaxy_tags:
-    []
+    - onguard
     # List tags for your role here, one per line. A tag is a keyword that describes
     # and categorizes the role. Users find roles by searching for tags. Be sure to
     # remove the '[]' above, if you add tags to this list.
@@ -48,6 +50,6 @@ galaxy_info:
     #       Maximum 20 tags per role.
 
 dependencies:
-  []
+  - natemarks.awscli_v2
   # List your role dependencies here, one per line. Be sure to remove the '[]' above,
   # if you add dependencies to this list.

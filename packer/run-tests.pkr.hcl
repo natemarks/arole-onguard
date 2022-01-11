@@ -56,7 +56,8 @@ build {
     inline = [
       "sudo mkdir -p /opt/ansible",
       "sudo mv /tmp/upload /opt/ansible/${var.role_name}",
-      "ls /opt/ansible/${var.role_name}"
+      "ls /opt/ansible/${var.role_name}",
+      "sudo ansible-galaxy install -r /opt/ansible/${var.role_name}/requirements.yml"
     ]
   }
 
