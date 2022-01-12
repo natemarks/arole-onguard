@@ -63,7 +63,7 @@ build {
 
   provisioner "shell" {
     inline = [
-      "/usr/local/bin/ansible-playbook /opt/ansible/onguard/playbook/local_test.yml",
+      "/usr/local/bin/ansible-playbook --extra-vars \"@/opt/ansible/onguard/test/secure_vars.yml\" /opt/ansible/onguard/playbook/local_test.yml",
       "sudo PATH=\"/usr/local/bin:$PATH\" python3 -m pytest -v /opt/ansible/onguard/test"
     ]
   }

@@ -1,20 +1,54 @@
 ---
-- name: Download makemine tarball
-  get_url:
-    url: https://github.com/natemarks/makemine/releases/download/v{{ version }}/makemine_{{ version }}_linux_amd64.tar.gz
-    dest: ~/makemine_{{ version }}_linux_amd64.tar.gz
-    checksum: sha1:{{ sha256 }}
-    mode: '0644'
+- name: Install packages required by onguard installer
+  become: true
+  apt:
+    pkg:
+      # - libgnome-keyring0
+      # - libnm-glib-vpn1
+      # - libnm-glib4
+      - libqt5core5a
+      - libqt5gui5
+      - gdebi
 
-- name: Extract /tmp/makemine_{{ version }}_linux_amd64.tar.gz in /tmp
-  ansible.builtin.unarchive:
-    src: "{{ ansible_env.HOME }}/makemine_{{ version }}_linux_amd64.tar.gz"
-    dest: "{{ ansible_env.HOME }}"
+- name: Create onguard extract directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ download }}"
+    - "{{ extract }}"
 
-- name: Copy makemine to /usr/local/bin
+- name: Download onguard package
+  become: no
+  command: aws s3 cp {{ s3_uri }} {{ extract }} --quiet
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+  register: ogdl
+  args:
+    creates: "{{ extract }}/{{ installer }}"
+
+- name: Download output
+  debug:
+    msg: "onguard bucket: {{ ogdl.stdout }}"
+
+- name: Extract onguard
+  unarchive:
+    src: "{{ extract }}/{{ installer }}"
+    dest: "{{ extract }}"
+    remote_src: yes
+
+- name: Run onguard installer
   become: yes
-  ansible.builtin.copy:
-    src: "{{ ansible_env.HOME }}/makemine"
-    dest: /usr/local/bin/makemine
-    mode: '0755'
-  
+  command: ./clearpass-onguard-installer-6.8.9.120997-ubuntu-x86_64 -y
+  args:
+    chdir: "{{ extract }}"
+    creates: "/usr/bin/clearpass-onguard"
+  register: oginst
+  changed_when: oginst.rc == 0
+  # the installer will fail in docker because of a non-existent dir
+
+- name: Installer output
+  debug:
+    msg: "onguard installer: {{ oginst.stdout }}"

@@ -1,4 +1,6 @@
 ---
-# defaults file for ansible-role-bash
-version: "0.0.5"
-sha256: "39dfe437f57a8587262168f617638b9354535eea"
+# ansible creates a working directory for the downloads for each app
+# example: {{ download_to }}/anyconnect/
+download: "{{ ansible_env.HOME }}/.onguard_downloads"
+extract: "{{ download }}/onguard"
+installer:  ClearPassOnGuardInstall.tar.gz

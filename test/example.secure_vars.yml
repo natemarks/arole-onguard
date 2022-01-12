@@ -1,0 +1,3 @@
+aws_access_key_id: AAAAAAA
+aws_secret_access_key: abc123
+s3_uri: "s3://my_bucket/ClearpassOnguard/linux/ClearPassOnGuardInstall.tar.gz"

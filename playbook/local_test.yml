@@ -2,5 +2,7 @@
 # file: webservers.yml
 - hosts: localhost
   become: false
+  vars:
+
   roles:
     - /opt/ansible/onguard
